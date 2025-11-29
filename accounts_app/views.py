@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .models import Profile
 from django.contrib.auth.decorators import login_required
+
 from accounts_app.decorators import role_required
+from .models import Profile
 
 
-# ============================================
+# ====================================================
 # تسجيل الدخول
-# ============================================
+# ====================================================
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -17,62 +18,63 @@ def login_view(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
+        if user:
             login(request, user)
-
             profile, created = Profile.objects.get_or_create(user=user)
 
-            if profile.role == "admin":
-                return redirect("/")
-            elif profile.role == "clearance":
-                return redirect("/shipments/")
-            elif profile.role == "transport":
-                return redirect("/transport/")
-            else:
-                return redirect("/")
+            redirect_map = {
+                "admin": "/",
+                "clearance": "/shipments/",
+                "transport": "/transport/",
+                "viewer": "/",
+            }
+            return redirect(redirect_map.get(profile.role, "/"))
 
         messages.error(request, "بيانات الدخول غير صحيحة!")
-        return redirect("/accounts/login/")
+        return redirect("accounts_app:login")
 
     return render(request, "accounts/login.html")
 
 
 
-# ============================================
+# ====================================================
 # تسجيل الخروج
-# ============================================
+# ====================================================
 def logout_view(request):
     logout(request)
-    return redirect("/accounts/login/")
+    return redirect("accounts_app:login")
 
 
-# ============================================
-# تسجيل مستخدم جديد (للمسؤول فقط)
-# ============================================
-def register_view(request):
+
+# ====================================================
+# إضافة مستخدم جديد (مدير النظام فقط)
+# ====================================================
+@login_required
+@role_required(["admin"])
+def add_user_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
         role = request.POST.get("role")
-        email = request.POST.get("email")
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "اسم المستخدم مستخدم بالفعل.")
-            return redirect("/accounts/register/")
+            return redirect("accounts_app:add_user")
 
-        user = User.objects.create_user(username=username, password=password, email=email)
+        user = User.objects.create_user(username=username, email=email, password=password)
         Profile.objects.create(user=user, role=role)
 
-        messages.success(request, "تم إنشاء المستخدم بنجاح.")
-        return redirect("/accounts/login/")
+        messages.success(request, "تم إنشاء المستخدم بنجاح!")
+        return redirect("accounts_app:users")
 
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/add_user.html")
 
 
 
-# ============================================
-# قائمة المستخدمين (للمسؤول فقط)
-# ============================================
+# ====================================================
+# قائمة المستخدمين
+# ====================================================
 @login_required
 @role_required(["admin"])
 def users_list_view(request):
@@ -81,9 +83,9 @@ def users_list_view(request):
 
 
 
-# ============================================
+# ====================================================
 # تعديل مستخدم
-# ============================================
+# ====================================================
 @login_required
 @role_required(["admin"])
 def edit_user_view(request, user_id):
@@ -91,40 +93,39 @@ def edit_user_view(request, user_id):
     profile, created = Profile.objects.get_or_create(user=user)
 
     if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        role = request.POST.get("role")
-
-        user.username = username
-        user.email = email
-        profile.role = role
+        user.username = request.POST.get("username")
+        user.email = request.POST.get("email")
+        profile.role = request.POST.get("role")
 
         user.save()
         profile.save()
 
-        messages.success(request, "تم تحديث بيانات المستخدم بنجاح.")
-        return redirect("/accounts/users/")
+        messages.success(request, "تم تحديث بيانات المستخدم بنجاح!")
+        return redirect("accounts_app:users")
 
-    return render(request, "accounts/edit_user.html", {"user": user, "profile": profile})
+    return render(request, "accounts/edit_user.html", {
+        "user": user,
+        "profile": profile
+    })
 
 
 
-# ============================================
+# ====================================================
 # حذف مستخدم
-# ============================================
+# ====================================================
 @login_required
 @role_required(["admin"])
 def delete_user_view(request, user_id):
     user = User.objects.get(id=user_id)
     user.delete()
     messages.success(request, "تم حذف المستخدم.")
-    return redirect("/accounts/users/")
+    return redirect("accounts_app:users")
 
 
 
-# ============================================
+# ====================================================
 # تعطيل مستخدم
-# ============================================
+# ====================================================
 @login_required
 @role_required(["admin"])
 def deactivate_user_view(request, user_id):
@@ -132,13 +133,13 @@ def deactivate_user_view(request, user_id):
     user.is_active = False
     user.save()
     messages.success(request, "تم تعطيل المستخدم.")
-    return redirect("/accounts/users/")
+    return redirect("accounts_app:users")
 
 
 
-# ============================================
+# ====================================================
 # تفعيل مستخدم
-# ============================================
+# ====================================================
 @login_required
 @role_required(["admin"])
 def activate_user_view(request, user_id):
@@ -146,13 +147,13 @@ def activate_user_view(request, user_id):
     user.is_active = True
     user.save()
     messages.success(request, "تم تفعيل المستخدم.")
-    return redirect("/accounts/users/")
+    return redirect("accounts_app:users")
 
 
 
-# ============================================
+# ====================================================
 # إعادة تعيين كلمة المرور
-# ============================================
+# ====================================================
 @login_required
 @role_required(["admin"])
 def reset_password_view(request, user_id):
@@ -164,6 +165,6 @@ def reset_password_view(request, user_id):
         user.save()
 
         messages.success(request, "تم تحديث كلمة المرور.")
-        return redirect(f"/accounts/users/edit/{user_id}/")
+        return redirect("accounts_app:edit_user", user_id=user_id)
 
-    return redirect(f"/accounts/users/edit/{user_id}/")
+    return render(request, "accounts/reset_password.html", {"user": user})

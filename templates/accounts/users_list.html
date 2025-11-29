@@ -3,7 +3,16 @@
 
 {% block content %}
 
-<h2 class="text-2xl font-bold mb-6 text-sky-700">إدارة المستخدمين</h2>
+<h2 class="text-2xl font-bold mb-6 text-sky-700 flex justify-between items-center">
+
+    <span>إدارة المستخدمين</span>
+
+    <a href="{% url 'accounts_app:add_user' %}" 
+    class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700">
+    ➕ إضافة مستخدم جديد
+    </a>
+
+</h2>
 
 <div class="bg-white shadow rounded-xl overflow-hidden">
 
@@ -13,6 +22,7 @@
                 <th class="p-3">اسم المستخدم</th>
                 <th class="p-3">البريد الإلكتروني</th>
                 <th class="p-3">الصلاحية</th>
+                <th class="p-3">الحالة</th>
                 <th class="p-3">إجراءات</th>
             </tr>
         </thead>
@@ -21,45 +31,82 @@
 
             {% for u in users %}
             <tr class="border-b hover:bg-gray-50">
-                <td class="p-3">{{ u.username }}</td>
-                <td class="p-3">{{ u.email }}</td>
-                <td class="p-3">{{ u.profile.get_role_display }}</td>
 
-                <td class="p-3 flex gap-2">
-                <a href="/accounts/users/edit/{{ u.id }}/"
-                    class="text-emerald-600 hover:underline">تعديل</a>
+                <!-- الاسم -->
+                <td class="p-3 font-medium">{{ u.username }}</td>
 
-                {% if u.is_active %}
-                    <a href="/accounts/users/deactivate/{{ u.id }}/"
-                        class="text-red-600 hover:underline"
-                        onclick="return confirm('هل تريد تعطيل المستخدم؟');">
-                        تعطيل
+                <!-- البريد -->
+                <td class="p-3">{{ u.email|default:"-" }}</td>
+
+                <!-- الصلاحية -->
+                <td class="p-3">
+                    {% if u.profile %}
+                        {{ u.profile.get_role_display }}
+                    {% else %}
+                        <span class="text-gray-400">(لا يوجد بروفايل)</span>
+                    {% endif %}
+                </td>
+
+                <!-- حالة المستخدم -->
+                <td class="p-3">
+                    {% if u.is_active %}
+                        <span class="text-emerald-600 font-bold">نشط</span>
+                    {% else %}
+                        <span class="text-red-600 font-bold">معطل</span>
+                    {% endif %}
+                </td>
+
+                <!-- الإجراءات -->
+                <td class="p-3 flex gap-3">
+
+                    <!-- تعديل -->
+                    <a href="{% url 'accounts_app:edit_user' u.id %}"
+                        class="text-sky-700 font-medium hover:underline">
+                        تعديل
                     </a>
-                {% else %}
-                    <a href="/accounts/users/activate/{{ u.id }}/"
-                        class="text-blue-600 hover:underline"
-                        onclick="return confirm('هل تريد تفعيل المستخدم؟');">
-                        تفعيل
-                    </a>
-                {% endif %}
 
-                <a href="/accounts/users/delete/{{ u.id }}/"
-                    class="text-gray-500 hover:underline"
-                    onclick="return confirm('هل أنت متأكد من حذف المستخدم؟');">
-                    حذف
-                </a>
+                    <!-- إعادة تعيين كلمة المرور -->
+                    <a href="{% url 'accounts_app:reset_password' u.id %}"
+                        class="text-purple-600 font-medium hover:underline">
+                        كلمة المرور
+                    </a>
+
+                    <!-- تفعيل / تعطيل -->
+                    {% if u.is_active %}
+                        <a href="{% url 'accounts_app:deactivate_user' u.id %}"
+                            class="text-red-600 font-medium hover:underline"
+                            onclick="return confirm('هل تريد تعطيل المستخدم؟');">
+                            تعطيل
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts_app:activate_user' u.id %}"
+                            class="text-emerald-600 font-medium hover:underline"
+                            onclick="return confirm('هل تريد تفعيل المستخدم؟');">
+                            تفعيل
+                        </a>
+                    {% endif %}
+
+                    <!-- حذف -->
+                    <a href="{% url 'accounts_app:delete_user' u.id %}"
+                        class="text-gray-600 font-medium hover:underline"
+                        onclick="return confirm('هل أنت متأكد من حذف المستخدم نهائيًا؟');">
+                        حذف
+                    </a>
+
                 </td>
             </tr>
-            
+
             {% empty %}
             <tr>
-                <td colspan="4" class="p-4 text-center text-gray-500">لا يوجد مستخدمون مسجلون.</td>
+                <td colspan="5" class="p-4 text-center text-gray-500">
+                    لا يوجد مستخدمون مسجلون.
+                </td>
             </tr>
             {% endfor %}
 
         </tbody>
-
     </table>
+
 </div>
 
 {% endblock %}

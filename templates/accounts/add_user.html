@@ -1,18 +1,16 @@
 {% extends "base.html" %}
-{% block title %}إنشاء مستخدم جديد{% endblock %}
+{% block title %}إضافة مستخدم جديد{% endblock %}
 
 {% block content %}
 
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-200 via-sky-100 to-white py-10">
+<div class="min-h-screen flex items-center justify-center py-10">
 
-  <div class="bg-white shadow-xl rounded-2xl p-10 w-full max-w-lg border border-gray-200">
+  <div class="bg-white shadow-xl rounded-2xl p-10 w-full max-w-xl border border-gray-200">
 
-    <!-- شعار -->
-    <div class="text-center mb-6">
-      <div class="text-4xl">🧑‍💼</div>
-      <h2 class="text-2xl font-bold text-sky-700 mt-3">إنشاء مستخدم جديد</h2>
-      <p class="text-gray-600 text-sm mt-1">يرجى إدخال بيانات المستخدم الجديد</p>
-    </div>
+    <!-- العنوان -->
+    <h2 class="text-2xl font-bold mb-6 text-sky-700 text-center">
+      إضافة مستخدم جديد
+    </h2>
 
     <!-- رسائل Django -->
     {% if messages %}
@@ -33,33 +31,37 @@
     </div>
     {% endif %}
 
-    <!-- نموذج إنشاء المستخدم -->
+    <!-- نموذج إضافة المستخدم -->
     <form method="post" class="space-y-5">
       {% csrf_token %}
 
+      <!-- اسم المستخدم -->
       <div>
-        <label class="block mb-1 text-gray-700 text-sm">اسم المستخدم</label>
-        <input type="text" name="username" required autocomplete="username"
+        <label class="block text-sm text-gray-700 mb-1">اسم المستخدم</label>
+        <input type="text" name="username" autocomplete="username" required minlength="3"
                class="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-               placeholder="اسم المستخدم">
+               placeholder="مثال: ahmed123">
       </div>
 
+      <!-- البريد الإلكتروني -->
       <div>
-        <label class="block mb-1 text-gray-700 text-sm">البريد الإلكتروني</label>
-        <input type="email" name="email" required autocomplete="email"
+        <label class="block text-sm text-gray-700 mb-1">البريد الإلكتروني</label>
+        <input type="email" name="email" autocomplete="email" required
                class="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                placeholder="example@email.com">
       </div>
 
+      <!-- كلمة المرور -->
       <div>
-        <label class="block mb-1 text-gray-700 text-sm">كلمة المرور</label>
-        <input type="password" name="password" required autocomplete="new-password"
+        <label class="block text-sm text-gray-700 mb-1">كلمة المرور</label>
+        <input type="password" name="password" required minlength="6" autocomplete="new-password"
                class="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500"
                placeholder="••••••••">
       </div>
 
+      <!-- الصلاحية -->
       <div>
-        <label class="block mb-1 text-gray-700 text-sm">الصلاحية</label>
+        <label class="block text-sm text-gray-700 mb-1">الصلاحية</label>
         <select name="role" required
                 class="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-500">
           <option value="viewer">مشاهد فقط</option>
@@ -69,7 +71,9 @@
         </select>
       </div>
 
-      <button class="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold text-sm hover:bg-emerald-700 transition">
+      <!-- زر الإنشاء -->
+      <button
+        class="w-full bg-sky-600 text-white py-3 rounded-lg font-semibold text-sm hover:bg-sky-700 transition">
         إنشاء المستخدم
       </button>
 
