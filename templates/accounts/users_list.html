@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}إدارة المستخدمين{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">إدارة المستخدمين</h2>
+
+<div class="bg-white shadow rounded-xl overflow-hidden">
+
+    <table class="w-full text-right">
+        <thead class="bg-gray-100 text-gray-700 text-sm">
+            <tr>
+                <th class="p-3">اسم المستخدم</th>
+                <th class="p-3">البريد الإلكتروني</th>
+                <th class="p-3">الصلاحية</th>
+                <th class="p-3">إجراءات</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-sm text-gray-700">
+
+            {% for u in users %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-3">{{ u.username }}</td>
+                <td class="p-3">{{ u.email }}</td>
+                <td class="p-3">{{ u.profile.get_role_display }}</td>
+
+                <td class="p-3 flex gap-2">
+                <a href="/accounts/users/edit/{{ u.id }}/"
+                    class="text-emerald-600 hover:underline">تعديل</a>
+
+                {% if u.is_active %}
+                    <a href="/accounts/users/deactivate/{{ u.id }}/"
+                        class="text-red-600 hover:underline"
+                        onclick="return confirm('هل تريد تعطيل المستخدم؟');">
+                        تعطيل
+                    </a>
+                {% else %}
+                    <a href="/accounts/users/activate/{{ u.id }}/"
+                        class="text-blue-600 hover:underline"
+                        onclick="return confirm('هل تريد تفعيل المستخدم؟');">
+                        تفعيل
+                    </a>
+                {% endif %}
+
+                <a href="/accounts/users/delete/{{ u.id }}/"
+                    class="text-gray-500 hover:underline"
+                    onclick="return confirm('هل أنت متأكد من حذف المستخدم؟');">
+                    حذف
+                </a>
+                </td>
+            </tr>
+            
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-4 text-center text-gray-500">لا يوجد مستخدمون مسجلون.</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}صلاحيات غير كافية{% endblock %}
+
+{% block content %}
+<div class="bg-white p-10 rounded-xl shadow text-center max-w-xl mx-auto mt-20">
+
+    <h2 class="text-3xl font-bold text-red-600 mb-4">🚫 لا تملك صلاحية الوصول</h2>
+
+    <p class="text-gray-600 mb-6 text-lg">
+        ليس لديك الصلاحية الكافية لعرض هذه الصفحة.
+    </p>
+
+    <a href="/" class="bg-sky-700 text-white px-6 py-3 rounded-lg hover:bg-sky-800">
+        العودة للصفحة الرئيسية
+    </a>
+
+</div>
+{% endblock %}

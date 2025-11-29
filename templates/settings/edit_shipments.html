@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}إعدادات الشحنات{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-green-700">إعدادات الشحنات</h2>
+
+<form method="post" class="bg-white p-6 rounded-xl shadow max-w-xl border">
+    {% csrf_token %}
+
+    <div class="space-y-4">
+
+        <div>
+            <label class="block text-sm font-semibold mb-1">تسلسل الشحنات يبدأ من</label>
+            <input type="number" name="next_shipment_number"
+                   value="{{ settings.next_shipment_number }}"
+                   class="w-full p-3 border rounded">
+        </div>
+
+        <label class="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="enable_label_print"
+                   {% if settings.enable_label_print %}checked{% endif %}>
+            <span>تفعيل طباعة الملصق</span>
+        </label>
+
+        <label class="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="enable_docs_print"
+                   {% if settings.enable_docs_print %}checked{% endif %}>
+            <span>تفعيل طباعة المستندات</span>
+        </label>
+
+    </div>
+
+    <div class="mt-6">
+        <button class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">حفظ التغييرات</button>
+    </div>
+
+</form>
+
+{% endblock %}

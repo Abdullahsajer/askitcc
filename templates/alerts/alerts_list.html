@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}التنبيهات{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-6 text-sky-700">التنبيهات</h2>
+
+<div class="bg-white shadow rounded-xl p-6">
+
+    {% if alerts %}
+        <ul class="space-y-4">
+            {% for alert in alerts %}
+                <li class="p-4 rounded border
+                    {% if alert.type == 'warning' %}border-yellow-400 bg-yellow-50 text-yellow-700
+                    {% elif alert.type == 'success' %}border-green-400 bg-green-50 text-green-700
+                    {% elif alert.type == 'info' %}border-blue-400 bg-blue-50 text-blue-700
+                    {% else %}border-gray-300{% endif %}
+                ">
+                    🔔 {{ alert.message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-500 text-center">لا توجد تنبيهات حالياً.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}العملاء{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">العملاء</h2>
+
+<div class="flex justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-700">قائمة العملاء</h3>
+    <a href="/customers/add/" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-sky-700">
+        + إضافة عميل جديد
+    </a>
+</div>
+
+<div class="bg-white shadow rounded-xl overflow-hidden">
+
+    <table class="w-full text-right">
+        <thead class="bg-gray-100 text-gray-700 text-sm">
+            <tr>
+                <th class="p-3">اسم العميل</th>
+                <th class="p-3">السجل التجاري</th>
+                <th class="p-3">تاريخ الانتهاء</th>
+                <th class="p-3">رقم التفويض</th>
+                <th class="p-3">انتهاء التفويض</th>
+                <th class="p-3">الهاتف</th>
+                <th class="p-3">إجراءات</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-sm text-gray-700">
+        {% for customer in customers %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-3">{{ customer.name }}</td>
+                <td class="p-3">{{ customer.cr_number }}</td>
+                <td class="p-3">{{ customer.cr_expiry_date }}</td>
+                <td class="p-3">{{ customer.authorization_number }}</td>
+                <td class="p-3">{{ customer.authorization_expiry }}</td>
+                <td class="p-3">{{ customer.phone }}</td>
+                <td class="p-3">
+                    <a href="/customers/edit/{{ customer.id }}/" class="text-emerald-600 hover:underline">تعديل</a> |
+                    <a href="/customers/delete/{{ customer.id }}/" class="text-red-600 hover:underline"
+                    onclick="return confirm('هل أنت متأكد من الحذف؟');">حذف</a>
+                    <a href="/customers/view/{{ c.id }}/" class="text-sky-600 hover:underline">عرض</a> |
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7" class="p-4 text-center text-gray-500">لا توجد بيانات عملاء</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

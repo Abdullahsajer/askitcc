@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}العمليات{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">العمليات</h2>
+
+<div class="flex justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-700">قائمة العمليات</h3>
+    <a href="/workflow/add/" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-sky-700">
+        + إضافة عملية جديدة
+    </a>
+</div>
+
+<div class="bg-white shadow rounded-xl overflow-hidden">
+
+    <table class="w-full text-right">
+        <thead class="bg-gray-100 text-gray-700 text-sm">
+            <tr>
+                <th class="p-3">الشحنة</th>
+                <th class="p-3">رقم الحاوية</th>
+                <th class="p-3">الحالة</th>
+                <th class="p-3">آخر تحديث</th>
+                <th class="p-3">إجراءات</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-sm text-gray-700">
+            {% for workflow in workflows %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-3">{{ workflow.shipment.mbl_number }}</td>
+                <td class="p-3">{{ workflow.shipment.container_number }}</td>
+                <td class="p-3">{{ workflow.get_current_status_display }}</td>
+                <td class="p-3">{{ workflow.last_update }}</td>
+                <td class="p-3">
+                    <a href="/workflow/{{ workflow.id }}/" class="text-sky-600 hover:underline">عرض</a> |
+                    <a href="/workflow/{{ workflow.id }}/edit/" class="text-emerald-600 hover:underline">تعديل</a> |
+                    <a href="/workflow/{{ workflow.id }}/delete/" class="text-red-600 hover:underline"
+                        onclick="return confirm('هل أنت متأكد؟');">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">لا توجد عمليات</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

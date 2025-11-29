@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}إعدادات النظام{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">إعدادات النظام</h2>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- بطاقة إعدادات الشركة -->
+    <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-sky-700 mb-4">إعدادات الشركة</h3>
+
+        <form>
+            <label class="block mb-2 text-sm">اسم الشركة</label>
+            <input type="text" class="w-full border rounded p-2 mb-4" placeholder="شركة التخليص الدولية">
+
+            <label class="block mb-2 text-sm">رقم السجل التجاري</label>
+            <input type="text" class="w-full border rounded p-2 mb-4" placeholder="1010000000">
+
+            <label class="block mb-2 text-sm">الرقم الضريبي</label>
+            <input type="text" class="w-full border rounded p-2 mb-4" placeholder="3100000000">
+        </form>
+    </div>
+
+    <!-- بطاقة معلومات التواصل -->
+    <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-emerald-700 mb-4">معلومات التواصل</h3>
+
+        <form>
+            <label class="block mb-2 text-sm">رقم الهاتف</label>
+            <input type="text" class="w-full border rounded p-2 mb-4" placeholder="0500000000">
+
+            <label class="block mb-2 text-sm">البريد الإلكتروني</label>
+            <input type="email" class="w-full border rounded p-2 mb-4" placeholder="info@company.com">
+        </form>
+    </div>
+
+    <!-- بطاقة المعلومات الضريبية -->
+    <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-orange-700 mb-4">المعلومات الضريبية</h3>
+
+        <form>
+            <label class="block mb-2 text-sm">اسم المسؤول الضريبي</label>
+            <input type="text" class="w-full border rounded p-2 mb-4">
+
+            <label class="block mb-2 text-sm">بريد المسؤول الضريبي</label>
+            <input type="email" class="w-full border rounded p-2 mb-4">
+        </form>
+    </div>
+
+    <!-- بطاقة الحساب البنكي -->
+    <div class="bg-white shadow rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-blue-700 mb-4">الحساب البنكي</h3>
+
+        <form>
+            <label class="block mb-2 text-sm">اسم البنك</label>
+            <input type="text" class="w-full border rounded p-2 mb-4">
+
+            <label class="block mb-2 text-sm">رقم الحساب (IBAN)</label>
+            <input type="text" class="w-full border rounded p-2 mb-4" placeholder="SA0000000000000000000000">
+        </form>
+    </div>
+
+    <!-- إعدادات المستندات -->
+    <div class="bg-white shadow rounded-xl p-6 col-span-1 lg:col-span-2">
+        <h3 class="text-lg font-semibold text-purple-700 mb-4">إعدادات المستندات والتنبيهات</h3>
+
+        <form class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block mb-2 text-sm">مدة تنبيه انتهاء السجل (يوم)</label>
+                <input type="number" class="w-full border rounded p-2" value="30">
+            </div>
+
+            <div>
+                <label class="block mb-2 text-sm">مدة تنبيه انتهاء التفويض (يوم)</label>
+                <input type="number" class="w-full border rounded p-2" value="15">
+            </div>
+
+            <div>
+                <label class="block mb-2 text-sm">مدة تنبيه انتهاء الرخصة (يوم)</label>
+                <input type="number" class="w-full border rounded p-2" value="20">
+            </div>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

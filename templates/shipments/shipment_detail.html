@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}تفاصيل الشحنة{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">تفاصيل الشحنة</h2>
+
+<div class="bg-white shadow rounded-xl p-6">
+
+    <!-- بيانات الشحنة -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <label class="text-gray-500 text-sm">رقم البوليصة:</label>
+            <p class="font-semibold">MBL-557890</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">رقم الحاوية:</label>
+            <p class="font-semibold">CMAU1234567</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">منفذ الوصول:</label>
+            <p class="font-semibold">ميناء جدة الإسلامي</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">تاريخ الوصول:</label>
+            <p class="font-semibold">2025-01-18</p>
+        </div>
+    </div>
+
+    <!-- حالة الشحنة -->
+    <div class="mb-6">
+        <label class="text-gray-500 text-sm">الحالة:</label>
+        <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">قيد التخليص</span>
+    </div>
+
+    <!-- الملاحظات -->
+    <div>
+        <label class="text-gray-500 text-sm">الملاحظات:</label>
+        <p class="bg-gray-50 p-3 rounded border">تم تحويل المستندات إلى شركة التخليص.</p>
+    </div>
+
+</div>
+
+{% endblock %}

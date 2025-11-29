@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}تعديل عميل{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">تعديل بيانات العميل</h2>
+
+<div class="bg-white shadow rounded-xl p-6 max-w-4xl border">
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- اسم العميل -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">اسم العميل</label>
+                <input type="text" name="name" value="{{ customer.name }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- رقم السجل التجاري -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">رقم السجل التجاري</label>
+                <input type="text" name="cr_number" value="{{ customer.cr_number }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- تاريخ انتهاء السجل التجاري -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">تاريخ انتهاء السجل التجاري</label>
+                <input type="date" name="cr_expiry_date"
+                       value="{{ customer.cr_expiry_date|date:'Y-m-d' }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- رقم التفويض -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">رقم التفويض</label>
+                <input type="text" name="authorization_number" value="{{ customer.authorization_number }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- تاريخ انتهاء التفويض -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">تاريخ انتهاء التفويض</label>
+                <input type="date" name="authorization_expiry"
+                       value="{{ customer.authorization_expiry|date:'Y-m-d' }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- رقم التواصل -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">رقم التواصل</label>
+                <input type="text" name="phone" value="{{ customer.phone }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- البريد الإلكتروني -->
+            <div>
+                <label class="block text-sm font-semibold mb-1">البريد الإلكتروني</label>
+                <input type="email" name="email" value="{{ customer.email }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+            <!-- العنوان -->
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold mb-1">العنوان</label>
+                <input type="text" name="address" value="{{ customer.address }}"
+                       class="w-full p-3 border rounded">
+            </div>
+
+        </div>
+
+        <div class="mt-6 text-left">
+            <button class="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700">
+                حفظ التغييرات
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}إعدادات التنبيهات{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-yellow-600">إعدادات التنبيهات</h2>
+
+<form method="post" class="bg-white p-6 rounded-xl shadow max-w-xl border">
+    {% csrf_token %}
+
+    <div class="space-y-4">
+
+        <label class="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="notify_cr_expiry"
+                   {% if settings.notify_cr_expiry %}checked{% endif %}>
+            <span>تنبيه انتهاء السجل التجاري</span>
+        </label>
+
+        <label class="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="notify_auth_expiry"
+                   {% if settings.notify_auth_expiry %}checked{% endif %}>
+            <span>تنبيه انتهاء التفويض</span>
+        </label>
+
+        <label class="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="notify_missing_docs"
+                   {% if settings.notify_missing_docs %}checked{% endif %}>
+            <span>تنبيه المستندات الناقصة</span>
+        </label>
+
+    </div>
+
+    <div class="mt-6">
+        <button class="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700">حفظ التغييرات</button>
+    </div>
+
+</form>
+
+{% endblock %}

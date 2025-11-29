@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}إضافة شحنة{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">إضافة شحنة جديدة</h2>
+
+<div class="bg-white shadow rounded-xl p-6">
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form.as_p }}
+        </div>
+
+        <div class="text-left mt-6">
+            <button class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700">
+                حفظ الشحنة
+            </button>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

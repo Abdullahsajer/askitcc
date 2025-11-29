@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}تفاصيل مهمة النقل{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">تفاصيل مهمة النقل</h2>
+
+<div class="bg-white shadow rounded-xl p-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <div>
+            <label class="text-gray-500 text-sm">رقم المهمة:</label>
+            <p class="font-semibold">T-001</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">رقم الحاوية:</label>
+            <p class="font-semibold">CMAU1234567</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">نوع المهمة:</label>
+            <p class="font-semibold">نقل من الميناء</p>
+        </div>
+
+        <div>
+            <label class="text-gray-500 text-sm">السائق:</label>
+            <p class="font-semibold">أحمد السائق</p>
+        </div>
+
+    </div>
+
+    <!-- التاريخ -->
+    <div class="mb-6">
+        <label class="text-gray-500 text-sm">تاريخ المهمة:</label>
+        <p class="font-semibold">2025-01-18</p>
+    </div>
+
+    <!-- الملاحظات -->
+    <div>
+        <label class="text-gray-500 text-sm">الملاحظات:</label>
+        <p class="bg-gray-50 p-3 rounded border">تم التسليم بنجاح.</p>
+    </div>
+
+    <div class="mt-6">
+        <a href="#" class="bg-gray-700 text-white px-5 py-2 rounded-lg hover:bg-gray-800">
+            🖨 طباعة المهمة
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

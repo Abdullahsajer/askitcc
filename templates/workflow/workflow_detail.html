@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}تفاصيل العملية{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">تفاصيل العملية</h2>
+
+<!-- بيانات العملية -->
+<div class="bg-white shadow rounded-xl p-6 mb-8">
+    <p><strong>رقم البوليصة:</strong> {{ workflow.shipment.mbl_number }}</p>
+    <p><strong>رقم الحاوية:</strong> {{ workflow.shipment.container_number }}</p>
+    <p><strong>الحالة الحالية:</strong> {{ workflow.get_current_status_display }}</p>
+</div>
+
+<!-- Timeline -->
+<h3 class="text-lg font-semibold text-gray-700 mb-4">سير العمل</h3>
+
+<div class="bg-white shadow rounded-xl p-6 mb-6">
+
+    {% for step in steps %}
+    <div class="flex items-start gap-4 mb-4">
+        <div class="w-4 h-4 bg-sky-600 rounded-full mt-1"></div>
+        <div>
+            <h4 class="font-semibold text-sky-700">{{ step.step_name }}</h4>
+            <p class="text-gray-500 text-sm">{{ step.timestamp }}</p>
+
+            <a href="/workflow/delete-step/{{ step.id }}/"
+               class="text-red-600 text-xs hover:underline"
+               onclick="return confirm('حذف المرحلة؟');">
+               حذف المرحلة
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">لا توجد مراحل حتى الآن.</p>
+    {% endfor %}
+
+</div>
+
+<!-- إضافة مرحلة جديدة -->
+<div class="bg-white shadow rounded-xl p-6">
+    <h3 class="text-lg font-semibold text-gray-700 mb-4">إضافة مرحلة جديدة</h3>
+
+    <form method="post" action="/workflow/{{ workflow.id }}/add-step/">
+        {% csrf_token %}
+        {{ step_form.as_p }}
+
+        <button class="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700">
+            إضافة مرحلة
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        أسك أي تي للتخليص الجمركي
+        {% endblock %}
+    </title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: "Cairo", sans-serif;
+            background-color: #f5f7fa;
+        }
+        .nav-link {
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .group:hover .group-hover\:block {
+            display: block;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- ============================= -->
+<!--         الشريط العلوي         -->
+<!-- ============================= -->
+<header class="bg-sky-700 text-white shadow-md">
+    <div class="container mx-auto px-10 py-4 flex justify-between items-center">
+
+        <!-- عنوان النظام -->
+        <h1 class="text-xl font-semibold">برنامج أسك أي تي للتخليص الجمركي</h1>
+
+        <!-- روابط النظام + التنبيهات + تسجيل الخروج -->
+        <div class="flex items-center gap-6">
+
+            <!-- الروابط -->
+            <nav class="flex gap-4 text-sm">
+
+                {# حماية في حال عدم تسجيل الدخول لتجنب الخطأ #}
+                {% if request.user.is_authenticated %}
+                    
+                    {# العملاء - Admin + Clearance #}
+                    {% if request.user.profile.role in "admin clearance" %}
+                        <a class="nav-link" href="/customers/">العملاء</a>
+                    {% endif %}
+
+                    {# الشحنات - Admin + Clearance #}
+                    {% if request.user.profile.role in "admin clearance" %}
+                        <a class="nav-link" href="/shipments/">الشحنات</a>
+                    {% endif %}
+
+                    {# النقل - Admin + Transport #}
+                    {% if request.user.profile.role in "admin transport" %}
+                        <a class="nav-link" href="/transport/">النقل</a>
+                    {% endif %}
+
+                    {# العمليات - Admin + Clearance #}
+                    {% if request.user.profile.role in "admin clearance" %}
+                        <a class="nav-link" href="/workflow/">العمليات</a>
+                    {% endif %}
+
+                    {# الإعدادات - Admin فقط #}
+                    {% if request.user.profile.role == "admin" %}
+                        <a class="nav-link" href="/settings/">الإعدادات</a>
+                    {% endif %}
+
+                    {# المستخدمين - Admin فقط #}
+                    {% if request.user.profile.role == "admin" %}
+                        <a class="nav-link" href="/accounts/users/">المستخدمين</a>
+                    {% endif %}
+
+                {% endif %}
+            </nav>
+
+
+            <!-- أيقونة التنبيهات 🔔 -->
+            <div class="relative group">
+
+                <button class="relative">
+                    <span class="text-2xl hover:text-yellow-300 transition">🔔</span>
+
+                    {% if alerts_count > 0 %}
+                    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5">
+                        {{ alerts_count }}
+                    </span>
+                    {% endif %}
+                </button>
+
+                <!-- قائمة التنبيهات -->
+                <div class="hidden group-hover:block absolute left-11 mt-2 w-72 bg-white shadow-lg rounded-lg border p-3 z-50 transform -translate-x-56 max-h-80 overflow-y-auto">
+
+
+                    <h4 class="text-sm font-semibold text-gray-700 mb-2">التنبيهات الأخيرة</h4>
+
+                    {% if alerts %}
+                        {% for alert in alerts|slice:":5" %}
+                            <div class="mb-2 p-2 rounded text-sm
+                                {% if alert.type == 'warning' %} bg-yellow-50 text-yellow-700 border border-yellow-200
+                                {% elif alert.type == 'success' %} bg-green-50 text-green-700 border border-green-200
+                                {% elif alert.type == 'info' %} bg-blue-50 text-blue-700 border border-blue-200
+                                {% else %} bg-gray-50 border text-gray-700 {% endif %}
+                            ">
+                                {{ alert.message }}
+                            </div>
+                        {% endfor %}
+
+                        <div class="text-center mt-2">
+                            <a href="/alerts/" class="text-sky-600 text-sm hover:underline">عرض كل التنبيهات</a>
+                        </div>
+
+                    {% else %}
+                        <p class="text-gray-500 text-sm text-center">لا توجد تنبيهات حالياً.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- زر تسجيل الخروج -->
+            <a href="/accounts/logout/" class="text-sm hover:text-yellow-300 transition">
+                تسجيل الخروج
+            </a>
+
+        </div>
+    </div>
+</header>
+
+
+<!-- شريط التنبيه العاجل (ركض) -->
+{% if alerts %}
+<div class="bg-yellow-50 border-b border-yellow-300 p-3 text-sm text-yellow-700">
+    <marquee behavior="scroll" direction="right">
+        {% for alert in alerts %}
+            🔔 {{ alert.message }} &nbsp;&nbsp;&nbsp;
+        {% endfor %}
+    </marquee>
+</div>
+{% endif %}
+
+
+<!-- المحتوى -->
+<main class="flex-1 container mx-auto px-6 py-6">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- الفوتر -->
+<footer class="bg-gray-800 text-white text-center py-3 mt-6 text-sm">
+    جميع الحقوق محفوظة © ASKIT 2030 — info@askit.com.sa
+</footer>
+
+</body>
+</html>

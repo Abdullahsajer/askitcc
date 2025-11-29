@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}بيانات العميل{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">بيانات العميل</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- بطاقة معلومات أساسية -->
+    <div class="bg-white p-6 rounded-xl shadow border">
+        <h3 class="text-lg font-bold text-gray-700 mb-4">المعلومات الأساسية</h3>
+
+        <p><strong>اسم العميل:</strong> {{ customer.name }}</p>
+        <p><strong>رقم السجل التجاري:</strong> {{ customer.cr_number }}</p>
+
+        <p>
+            <strong>حالة السجل التجاري:</strong>
+            <span class="
+                {% if cr_status == 'ساري' %} text-green-600 
+                {% elif cr_status == 'قريب من الانتهاء' %} text-yellow-600
+                {% else %} text-red-600 {% endif %}
+            ">
+                {{ cr_status }}
+            </span>
+        </p>
+
+        <p><strong>تاريخ انتهاء السجل التجاري:</strong> {{ customer.cr_expiry_date }}</p>
+    </div>
+
+    <!-- بطاقة التفويض -->
+    <div class="bg-white p-6 rounded-xl shadow border">
+        <h3 class="text-lg font-bold text-gray-700 mb-4">التفويض</h3>
+
+        <p><strong>رقم التفويض:</strong> {{ customer.authorization_number }}</p>
+
+        <p>
+            <strong>حالة التفويض:</strong>
+            <span class="
+                {% if auth_status == 'ساري' %} text-green-600 
+                {% elif auth_status == 'قريب من الانتهاء' %} text-yellow-600
+                {% else %} text-red-600 {% endif %}
+            ">
+                {{ auth_status }}
+            </span>
+        </p>
+
+        <p><strong>تاريخ انتهاء التفويض:</strong> {{ customer.authorization_expiry }}</p>
+    </div>
+
+    <!-- بطاقة أرقام الأداء -->
+    <div class="bg-white p-6 rounded-xl shadow border">
+        <h3 class="text-lg font-bold text-gray-700 mb-4">إحصائيات</h3>
+
+        <p><strong>عدد الشحنات:</strong> {{ shipments_count }}</p>
+        <p><strong>عدد العمليات:</strong> {{ workflow_count }}</p>
+    </div>
+
+    <!-- بطاقة معلومات التواصل -->
+    <div class="bg-white p-6 rounded-xl shadow border">
+        <h3 class="text-lg font-bold text-gray-700 mb-4">معلومات التواصل</h3>
+
+        <p><strong>الهاتف:</strong> {{ customer.phone }}</p>
+        <p><strong>البريد الإلكتروني:</strong> {{ customer.email }}</p>
+        <p><strong>العنوان:</strong> {{ customer.address }}</p>
+    </div>
+
+</div>
+
+<h3 class="text-xl font-bold text-sky-700 mt-10 mb-4">آخر الشحنات</h3>
+
+<div class="bg-white shadow rounded-xl p-6 overflow-x-auto">
+    {% if last_shipments %}
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b bg-gray-50">
+                    <th class="p-2">رقم الشحنة</th>
+                    <th class="p-2">الوصف</th>
+                    <th class="p-2">الحالة</th>
+                    <th class="p-2">التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in last_shipments %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-2">{{ s.tracking_number }}</td>
+                    <td class="p-2">{{ s.description|default:"-" }}</td>
+                    <td class="p-2">
+                        <span class="px-2 py-1 rounded text-xs
+                            {% if s.status == 'new' %} bg-blue-100 text-blue-700
+                            {% elif s.status == 'in_progress' %} bg-yellow-100 text-yellow-700
+                            {% elif s.status == 'completed' %} bg-green-100 text-green-700
+                            {% else %} bg-gray-100 text-gray-600 {% endif %}
+                        ">
+                            {{ s.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="p-2">{{ s.created_at|date:"Y-m-d" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-gray-500">لا توجد شحنات مرتبطة بهذا العميل.</p>
+    {% endif %}
+</div>
+
+
+<h3 class="text-xl font-bold text-sky-700 mt-10 mb-4">آخر العمليات</h3>
+
+<div class="bg-white shadow rounded-xl p-6 overflow-x-auto">
+    {% if last_workflows %}
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b bg-gray-50">
+                    <th class="p-2">رقم العملية</th>
+                    <th class="p-2">نوع العملية</th>
+                    <th class="p-2">الحالة</th>
+                    <th class="p-2">التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in last_workflows %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-2">{{ w.id }}</td>
+                    <td class="p-2">{{ w.operation_type }}</td>
+                    <td class="p-2">
+                        <span class="px-2 py-1 rounded text-xs
+                            {% if w.status == 'pending' %} bg-yellow-100 text-yellow-700
+                            {% elif w.status == 'done' %} bg-green-100 text-green-700
+                            {% else %} bg-gray-100 text-gray-600 {% endif %}
+                        ">
+                            {{ w.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="p-2">{{ w.created_at|date:"Y-m-d" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-gray-500">لا توجد عمليات لهذا العميل.</p>
+    {% endif %}
+</div>
+
+<!-- أزرار أسفل الصفحة -->
+<div class="mt-8 flex gap-4">
+
+    <a href="/customers/edit/{{ customer.id }}/"
+       class="bg-emerald-600 text-white px-6 py-2 rounded hover:bg-emerald-700">
+        تعديل العميل
+    </a>
+
+    <a href="/customers/"
+       class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
+        العودة
+    </a>
+
+</div>
+
+{% endblock %}

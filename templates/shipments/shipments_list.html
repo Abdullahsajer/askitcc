@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}الشحنات{% endblock %}
+
+{% block content %}
+
+<h2 class="text-2xl font-bold mb-6 text-sky-700">الشحنات</h2>
+
+<div class="flex justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-700">قائمة الشحنات</h3>
+    <a href="/shipments/add/" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-sky-700">
+        + إضافة شحنة جديدة
+    </a>
+</div>
+
+<div class="bg-white shadow rounded-xl overflow-hidden">
+
+    <table class="w-full text-right">
+        <thead class="bg-gray-100 text-gray-700 text-sm">
+            <tr>
+                <th class="p-3">رقم البوليصة</th>
+                <th class="p-3">رقم الحاوية</th>
+                <th class="p-3">نوع الشحنة</th>
+                <th class="p-3">الميناء</th>
+                <th class="p-3">تاريخ الوصول</th>
+                <th class="p-3">العميل</th>
+                <th class="p-3">إجراءات</th>
+            </tr>
+        </thead>
+
+        <tbody class="text-sm text-gray-700">
+
+            {% for shipment in shipments %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-3">{{ shipment.mbl_number }}</td>
+                <td class="p-3">{{ shipment.container_number }}</td>
+                <td class="p-3">{{ shipment.get_shipment_type_display }}</td>
+                <td class="p-3">{{ shipment.port }}</td>
+                <td class="p-3">{{ shipment.arrival_date }}</td>
+                <td class="p-3">{{ shipment.customer.name }}</td>
+                <td class="p-3">
+                    <a href="/shipments/edit/{{ shipment.id }}/" class="text-emerald-600 hover:underline">تعديل</a> |
+                    <a href="/shipments/delete/{{ shipment.id }}/" class="text-red-600 hover:underline"
+                        onclick="return confirm('هل أنت متأكد من الحذف؟');">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="p-4 text-center text-gray-500">لا توجد شحنات مسجلة</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}
