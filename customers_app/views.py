@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from accounts_app.decorators import role_required
+
+from accounts_app.decorators import permission_required
 from .models import Customer
 from .forms import CustomerForm
 from shipments_app.models import Shipment
@@ -8,18 +9,21 @@ from workflow_app.models import Workflow
 from datetime import date, timedelta
 
 
-
-
-
-
-# عرض قائمة العملاء
-@role_required(["admin", "clearance"])
+# ===============================
+# قائمة العملاء
+# ===============================
+@login_required
+@permission_required("customers.view_customer")
 def customers_list_view(request):
     customers = Customer.objects.all().order_by("-id")
     return render(request, "customers/customers_list.html", {"customers": customers})
 
+
+# ===============================
 # إضافة عميل
-@role_required(["admin", "clearance"])
+# ===============================
+@login_required
+@permission_required("customers.add_customer")
 def add_customer_view(request):
     if request.method == "POST":
         form = CustomerForm(request.POST)
@@ -32,11 +36,14 @@ def add_customer_view(request):
     return render(request, "customers/add_customer.html", {"form": form})
 
 
+# ===============================
 # تعديل عميل
-@role_required(["admin", "clearance"])
+# ===============================
+@login_required
+@permission_required("customers.edit_customer")
 def edit_customer_view(request, customer_id):
     customer = get_object_or_404(Customer, id=customer_id)
-    
+
     if request.method == "POST":
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
@@ -47,8 +54,12 @@ def edit_customer_view(request, customer_id):
 
     return render(request, "customers/edit_customer.html", {"form": form, "customer": customer})
 
+
+# ===============================
 # حذف عميل
-@role_required(["admin", "clearance"])
+# ===============================
+@login_required
+@permission_required("customers.delete_customer")
 def delete_customer_view(request, customer_id):
     customer = get_object_or_404(Customer, id=customer_id)
     customer.delete()
@@ -56,10 +67,10 @@ def delete_customer_view(request, customer_id):
 
 
 # ===============================
-# صفحة عرض بيانات العميل
+# عرض بيانات عميل
 # ===============================
 @login_required
-@role_required(["admin", "clearance"])
+@permission_required("customers.view_customer")
 def view_customer_view(request, customer_id):
 
     customer = get_object_or_404(Customer, id=customer_id)
@@ -80,16 +91,10 @@ def view_customer_view(request, customer_id):
         elif customer.authorization_expiry <= date.today() + timedelta(days=30):
             auth_status = "قريب من الانتهاء"
 
-    # عدد الشحنات
     shipments_count = Shipment.objects.filter(customer=customer).count()
-
-    # عدد العمليات
     workflow_count = Workflow.objects.filter(customer=customer).count()
 
-    # آخر 5 شحنات
     last_shipments = Shipment.objects.filter(customer=customer).order_by("-created_at")[:5]
-
-    # آخر 5 عمليات
     last_workflows = Workflow.objects.filter(customer=customer).order_by("-created_at")[:5]
 
     context = {

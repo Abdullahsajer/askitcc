@@ -2,21 +2,23 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import CompanySettings, AlertsSettings, ShipmentsSettings
 from django.contrib.auth.decorators import login_required
-from accounts_app.decorators import role_required
+from accounts_app.decorators import permission_required
 
 
+# ===============================
 # صفحة الإعدادات الرئيسية
+# ===============================
 @login_required
-@role_required(["admin"])
+@permission_required("settings.view_settings")
 def settings_home_view(request):
     return render(request, "settings/settings_home.html")
 
 
-# ------------------------------
+# ===============================
 # تعديل إعدادات الشركة
-# ------------------------------
+# ===============================
 @login_required
-@role_required(["admin"])
+@permission_required("settings.edit_settings")
 def company_settings_view(request):
     settings_obj, created = CompanySettings.objects.get_or_create(id=1)
 
@@ -28,6 +30,7 @@ def company_settings_view(request):
         settings_obj.email = request.POST.get("email")
         settings_obj.iban = request.POST.get("iban")
         settings_obj.address = request.POST.get("address")
+
         settings_obj.save()
 
         messages.success(request, "تم حفظ إعدادات الشركة بنجاح.")
@@ -36,11 +39,11 @@ def company_settings_view(request):
     return render(request, "settings/edit_company.html", {"settings": settings_obj})
 
 
-# ------------------------------
+# ===============================
 # تعديل إعدادات التنبيهات
-# ------------------------------
+# ===============================
 @login_required
-@role_required(["admin"])
+@permission_required("settings.edit_settings")
 def alerts_settings_view(request):
     settings_obj, created = AlertsSettings.objects.get_or_create(id=1)
 
@@ -48,6 +51,7 @@ def alerts_settings_view(request):
         settings_obj.notify_cr_expiry = request.POST.get("notify_cr_expiry") == "on"
         settings_obj.notify_auth_expiry = request.POST.get("notify_auth_expiry") == "on"
         settings_obj.notify_missing_docs = request.POST.get("notify_missing_docs") == "on"
+
         settings_obj.save()
 
         messages.success(request, "تم حفظ إعدادات التنبيهات بنجاح.")
@@ -56,11 +60,11 @@ def alerts_settings_view(request):
     return render(request, "settings/edit_alerts.html", {"settings": settings_obj})
 
 
-# ------------------------------
+# ===============================
 # تعديل إعدادات الشحنات
-# ------------------------------
+# ===============================
 @login_required
-@role_required(["admin"])
+@permission_required("settings.edit_settings")
 def shipments_settings_view(request):
     settings_obj, created = ShipmentsSettings.objects.get_or_create(id=1)
 
@@ -68,6 +72,7 @@ def shipments_settings_view(request):
         settings_obj.next_shipment_number = request.POST.get("next_shipment_number")
         settings_obj.enable_label_print = request.POST.get("enable_label_print") == "on"
         settings_obj.enable_docs_print = request.POST.get("enable_docs_print") == "on"
+
         settings_obj.save()
 
         messages.success(request, "تم حفظ إعدادات الشحنات بنجاح.")
