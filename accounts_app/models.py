@@ -55,19 +55,33 @@ class RolePermission(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
-
-    # صلاحيات إضافية محددة يدويًا
     custom_permissions = models.ManyToManyField(Permission, blank=True)
 
     def __str__(self):
         return self.user.username
 
-    # إرجاع جميع الصلاحيات الفعلية (الدور + المخصصة)
+    # ---------------------------
+    # إرجاع كل الصلاحيات
+    # ---------------------------
     def get_all_permissions(self):
-        role_perms = Permission.objects.filter(rolepermission__role=self.role)
-        custom = self.custom_permissions.all()
-        return set(list(role_perms) + list(custom))
+        if not self.role:
+            return []
 
+        # صلاحيات الدور
+        role_perms = Permission.objects.filter(
+            rolepermission__role=self.role
+        )
+
+        # صلاحيات المخصصة
+        custom_perms = self.custom_permissions.all()
+
+        # دمج الجميع
+        perms = set(list(role_perms) + list(custom_perms))
+
+        return perms
+
+    # ---------------------------
     # التحقق من صلاحية محددة
+    # ---------------------------
     def has_permission(self, perm_code):
         return perm_code in [p.code for p in self.get_all_permissions()]

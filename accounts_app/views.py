@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from accounts_app.decorators import permission_required
 from accounts_app.models import Profile, Role, PermissionGroup, Permission, RolePermission
 
-
 # ====================================================
 # تسجيل الدخول
 # ====================================================
@@ -221,3 +220,9 @@ def permissions_view(request):
         "selected_role": selected_role,
         "role_permissions": role_permissions,
     })
+
+
+
+
+def handle_403(request, exception=None):
+    return render(request, "403.html", status=403)

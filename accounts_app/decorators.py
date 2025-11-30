@@ -1,31 +1,27 @@
-from django.shortcuts import redirect
-from django.contrib import messages
+from django.shortcuts import redirect, render
 from accounts_app.models import Permission
 
-def permission_required(permission_code):
+
+def permission_required(perm_code):
     def decorator(view_func):
         def wrapper(request, *args, **kwargs):
 
+            # غير مسجّل دخول
             if not request.user.is_authenticated:
-                return redirect("/accounts/login/")
+                return redirect("accounts_app:login")
 
-            profile = request.user.profile
+            profile = getattr(request.user, "profile", None)
 
-            # صلاحيات الدور Role
-            role_permissions = set(
-                profile.role.rolepermission_set.values_list("permission__code", flat=True)
-            ) if profile.role else set()
+            # لو ما عنده ملف أو دور
+            if not profile or not profile.role:
+                return render(request, "403.html", status=403)
 
-            # صلاحيات مخصصة للمستخدم (Extra)
-            custom_permissions = set(
-                profile.custom_permissions.values_list("code", flat=True)
-            )
+            # تحميل جميع الصلاحيات (دور + مخصصة)
+            user_permissions = [p.code for p in profile.get_all_permissions()]
 
-            all_permissions = role_permissions.union(custom_permissions)
-
-            if permission_code not in all_permissions:
-                messages.error(request, "ليس لديك صلاحية لدخول هذه الصفحة.")
-                return redirect("/")
+            # التحقق هل يملك الصلاحية المطلوبة
+            if perm_code not in user_permissions:
+                return render(request, "403.html", status=403)
 
             return view_func(request, *args, **kwargs)
 

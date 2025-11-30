@@ -14,4 +14,7 @@ urlpatterns = [
     path('alerts/', include('alerts_app.urls')),
     path('accounts/', include('accounts_app.urls')),
 
+
 ]
+
+handler403 = "accounts_app.views.handle_403"

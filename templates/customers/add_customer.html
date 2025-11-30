@@ -1,8 +1,11 @@
 {% extends "base.html" %}
-
-{% block title %}إضافة عميل{% endblock %}
+{% block title %}إضافة عميل جديد{% endblock %}
 
 {% block content %}
+
+{% if "customers.add_customer" not in user_permissions %}
+    {% include "403.html" %}
+{% else %}
 
 <h2 class="text-2xl font-bold mb-6 text-sky-700">إضافة عميل جديد</h2>
 
@@ -12,11 +15,59 @@
         {% csrf_token %}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{ form.as_p }}
+
+            <!-- اسم العميل -->
+            <div>
+                <label class="block mb-2 text-sm">اسم العميل</label>
+                {{ form.name }}
+            </div>
+
+            <!-- السجل التجاري -->
+            <div>
+                <label class="block mb-2 text-sm">رقم السجل التجاري</label>
+                {{ form.cr_number }}
+            </div>
+
+            <!-- تاريخ انتهاء السجل -->
+            <div>
+                <label class="block mb-2 text-sm">تاريخ انتهاء السجل</label>
+                {{ form.cr_expiry_date }}
+            </div>
+
+            <!-- رقم التفويض -->
+            <div>
+                <label class="block mb-2 text-sm">رقم التفويض</label>
+                {{ form.authorization_number }}
+            </div>
+
+            <!-- تاريخ انتهاء التفويض -->
+            <div>
+                <label class="block mb-2 text-sm">تاريخ انتهاء التفويض</label>
+                {{ form.authorization_expiry }}
+            </div>
+
+            <!-- الهاتف -->
+            <div>
+                <label class="block mb-2 text-sm">رقم الهاتف</label>
+                {{ form.phone }}
+            </div>
+
+            <!-- الإيميل -->
+            <div>
+                <label class="block mb-2 text-sm">البريد الإلكتروني</label>
+                {{ form.email }}
+            </div>
+
+            <!-- ملاحظات -->
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm">ملاحظات</label>
+                {{ form.notes }}
+            </div>
+
         </div>
 
         <div class="mt-6 text-left">
-            <button class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700">
+            <button class="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700">
                 حفظ العميل
             </button>
         </div>
@@ -24,5 +75,7 @@
     </form>
 
 </div>
+
+{% endif %}
 
 {% endblock %}

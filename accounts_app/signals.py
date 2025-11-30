@@ -1,13 +1,17 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-from .models import Profile
+from accounts_app.models import Role, Permission, RolePermission
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+
+@receiver(post_save, sender=Permission)
+def assign_permission_to_admin(sender, instance, created, **kwargs):
+    """
+    عند إنشاء أي صلاحية جديدة → تربط تلقائياً مع دور مدير النظام.
+    """
     if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+        try:
+            admin_role = Role.objects.get(name="مدير النظام")
+            RolePermission.objects.get_or_create(role=admin_role, permission=instance)
+            print(f"✔ تمت إضافة الصلاحية الجديدة ({instance.code}) لدور مدير النظام.")
+        except Role.DoesNotExist:
+            print("⚠ لا يوجد دور باسم 'مدير النظام'.")

@@ -1,58 +1,64 @@
 {% extends "base.html" %}
-
-{% block title %}العملاء{% endblock %}
+{% block title %}قائمة العملاء{% endblock %}
 
 {% block content %}
 
-<h2 class="text-2xl font-bold mb-6 text-sky-700">العملاء</h2>
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-sky-700">العملاء</h2>
 
-<div class="flex justify-between mb-6">
-    <h3 class="text-lg font-semibold text-gray-700">قائمة العملاء</h3>
-    <a href="/customers/add/" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-sky-700">
-        + إضافة عميل جديد
-    </a>
+    {% if "customers.add_customer" in user_permissions %}
+        <a href="{% url 'customers_app:add' %}"
+           class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
+            ➕ إضافة عميل
+        </a>
+    {% endif %}
 </div>
 
-<div class="bg-white shadow rounded-xl overflow-hidden">
-
-    <table class="w-full text-right">
-        <thead class="bg-gray-100 text-gray-700 text-sm">
-            <tr>
-                <th class="p-3">اسم العميل</th>
-                <th class="p-3">السجل التجاري</th>
-                <th class="p-3">تاريخ الانتهاء</th>
-                <th class="p-3">رقم التفويض</th>
-                <th class="p-3">انتهاء التفويض</th>
-                <th class="p-3">الهاتف</th>
-                <th class="p-3">إجراءات</th>
+<div class="bg-white shadow rounded-xl p-6">
+    <table class="min-w-full">
+        <thead>
+            <tr class="border-b">
+                <th class="py-3">الاسم</th>
+                <th class="py-3">الهاتف</th>
+                <th class="py-3">الإيميل</th>
+                <th class="py-3">العمليات</th>
             </tr>
         </thead>
 
-        <tbody class="text-sm text-gray-700">
-        {% for customer in customers %}
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-3">{{ customer.name }}</td>
-                <td class="p-3">{{ customer.cr_number }}</td>
-                <td class="p-3">{{ customer.cr_expiry_date }}</td>
-                <td class="p-3">{{ customer.authorization_number }}</td>
-                <td class="p-3">{{ customer.authorization_expiry }}</td>
-                <td class="p-3">{{ customer.phone }}</td>
-                <td class="p-3">
-                    <a href="/customers/edit/{{ customer.id }}/" class="text-emerald-600 hover:underline">تعديل</a> |
-                    <a href="/customers/delete/{{ customer.id }}/" class="text-red-600 hover:underline"
-                    onclick="return confirm('هل أنت متأكد من الحذف؟');">حذف</a>
-                    <a href="/customers/view/{{ c.id }}/" class="text-sky-600 hover:underline">عرض</a> |
+        <tbody>
+            {% for customer in customers %}
+            <tr class="border-b">
+
+                <td class="py-3">{{ customer.name }}</td>
+                <td class="py-3">{{ customer.phone }}</td>
+                <td class="py-3">{{ customer.email }}</td>
+
+                <td class="py-3 space-x-2">
+
+                    {% if "customers.view_customer" in user_permissions %}
+                        <a href="{% url 'customers_app:view_customer' customer.id %}"
+                           class="text-sky-700 font-bold">👁 عرض</a>
+                    {% endif %}
+
+                    {% if "customers.edit_customer" in user_permissions %}
+                        <a href="{% url 'customers_app:edit' customer.id %}"
+                           class="text-amber-600 font-bold">✏ تعديل</a>
+                    {% endif %}
+
+                    {% if "customers.delete_customer" in user_permissions %}
+                        <a href="{% url 'customers_app:delete' customer.id %}"
+                           class="text-red-600 font-bold"
+                           onclick="return confirm('هل أنت متأكد من حذف العميل؟');">
+                            🗑 حذف
+                        </a>
+                    {% endif %}
+
                 </td>
+
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="7" class="p-4 text-center text-gray-500">لا توجد بيانات عملاء</td>
-            </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
-
     </table>
-
 </div>
 
 {% endblock %}
